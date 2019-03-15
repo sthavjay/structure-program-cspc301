@@ -1,115 +1,101 @@
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <string>
-#include <fstream>
+#define _CRT_SECURE_NO_WARNINGS
+#include <fstream> 
+#include <iostream> 
+#include <string> 
+#include <cstring> 
+
 using namespace std;
-
-struct person {
-  char Name[20];
-  float Balance;
+struct PERSON
+{
+	char Name[20];
+	float Balance;
 };
-
-void display ( person a[], int N){
-  cout<<display<<endl;
-for (int i= 0; i<N; i++){
-cout <<a[i].Name  <<" "<<a[i].Balance<<endl;
-}
-return;
-}
-
-void FindRichest(person a[], int N){
-  float amt = 0;
-  string rich = a[0].Name;
- for (int i =0; i<N;i++ ) {
- if (a[i].Balance > amt)
-  amt = a[i].Balance;
-  rich = a[i].Name;
-}
-cout << "the richest person  is" <<rich<< " " << amt<< endl;
-}
-
-
-void Deposit(string custname, person*a, int N){
-  float amount;
-  int match=0;
-  cout<< "enter the full name of deposite amount :"<<name<< " "<<endl;
-  cin>>"enter the new amount to  deposite">> amount>> endl;
-
-  for (int i = 0; i<N; i++){
-    if (a[i].Name == custname)
-    {
-      a[i].Balance += amount;
-      cout << "the new total balance is "<<a[i].Name <<" "<<a[i].Balance<< endl;
-    }
-      return;
-    }
-}
-
-void NewCopy(string filename, person *a, int N)// here we have to use write fucntion ofstream, to make a copy in array.
+void display(PERSON array[], int n)
 {
-  char x[20];
-  float bal;
-  ofstream file; // to write file into text file.
-  file.open(filename.c_str()); // open a file to write at first
-
-  for (int i=0; i<N; i++){
-  strcpy (x, a[i].Name);
-  bal = a[i].Balance;
- file<<x<<y<<bal<<"\n"; // format of output in the new text file.
+	cout << "Name and Balance"<< endl;
+	for (int i = 0; i < n; i++)
+		cout << array[i].Name << " " << array[i].Balance << endl;
 }
-  file.close();
-}
-
-int main() {
-
-int N =0;
-string x;
-string y;
-string name;
-float bal;
-person  arr[10];
-char menu;
- for (int i =0, i<n ,i++ )
- {
-   cout<< x << y << bal<< endl;
- }
-fstream myfile; // to read the file
-myfile.open("data.txt"); // file open to  read the file.
-
-if(myfile.is_open()){
-while (myfile>>x>>y>>bal){
-  cout << x <<" "<<" "<<y <<" "<< bal <<endl;
-
-}
-myfile.close();
-
-while ( menu != '0')
+void findRichest(PERSON array[], int n)
 {
-  cout << "D:Display: "<<"F: Richest "<< "D: Deposit"<< "N: NewCopy"<< " Q: quit ";
-  cin>> menu;
-  switch(menu)
+	int i;
+	float richest = 0.0;
+	for ( i = 0; i < n; i++)
+	{
+		if (richest < array[i].Balance)
+			richest = array[i].Balance;
+	}
+	for ( i = 0; i < n; i++)
+	{
+		if (richest == array[i].Balance)
+			break;
+	}
+	cout << "The Highest balance customer's name is  " << array[i].Name<< endl;
+}
+void deposit(string customer, PERSON array[], int n)
 {
-  case'D' :
-  display(arr,10);
-  break;
-  case'F':
-  FindRichest(arr,N);
-  break;
-  case 'D':
-  Deposit(name,arr,N);
-  break;
-  case 'N':
-  NewCopy("data.txt",arr,N);
-  break;
-  */
-  case 'Q':
-  return 0;
-  break;
-  default:
-  cout<<"enter a correct option, please! :";
-  break;
+	float amount = 0.0;
+	int input = 1;
+	int i;
+	for (i = 0; i < n; i++)	{
+		input = strcmp(customer.c_str(), array[i].Name);
+		if (input == 0)			break;
+	}	
+		if (input == 0)	{
+		cout << customer << "enter your deposit amount: " << endl;
+		cin >> amount;
+		array[i].Balance = amount + array[i].Balance;
+		cout << "the New Balance :  " << array[i].Balance << endl;
+		}
 }
+
+void newCopy(string file, PERSON array[], int n)
+{
+	ofstream filename(file.c_str());
+	char name[20];
+	float balance;
+	for (int i = 0; i < n; i++)
+	{
+		strcpy(name, array[i].Name);
+		balance = array[i].Balance;
+		filename << name << " " << balance;
+	}
+	filename.close();
 }
-return 0;
+int main()
+{
+	int num = 0;
+	string line;
+	string fName;
+	string lName;
+	
+	string customer;
+	char name[20];
+	float balance;
+	string tempName;
+	ifstream file("input.txt");
+	while (getline(file, line))
+		num++;
+	PERSON array[20];
+	file.close();
+	ifstream file2("input.txt");
+	if (file2.is_open())
+	{
+		for (int i = 0; i < num; i++)
+		{
+			file2 >> fName >> lName >> balance;
+			tempName = fName + " " + lName;
+			strcpy(array[i].Name, tempName.c_str());
+			array[i].Balance = balance;
+		}
+	}
+	file2.close();
+	display(array, num);
+	findRichest(array, num);
+	cout << "Enter the name " << endl;
+	getline(cin, customer);
+	deposit(customer, array, num);
+	newCopy("input.txt", array, num);
+	system("PAUSE");
+	return 0;
 }
